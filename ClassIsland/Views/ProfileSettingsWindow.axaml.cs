@@ -25,6 +25,7 @@ using ClassIsland.Core.Abstractions.Controls;
 using ClassIsland.Core.Abstractions.Services;
 using ClassIsland.Core.Commands;
 using ClassIsland.Core.Controls;
+using ClassIsland.Core.Services;
 using ClassIsland.Core.Enums.Profile;
 using ClassIsland.Core.Helpers.UI;
 using ClassIsland.Core.Models.Profile;
@@ -76,6 +77,8 @@ public partial class ProfileSettingsWindow : MyWindow
             ViewModel.MasterPageTabSelectIndex = 3;
         }
         InitializeComponent();
+        RestoreWindowBounds();
+        Closed += (_, _) => SaveWindowBounds();
         TimeLineListControl.SelectionChanged += TimeLineListControl_OnSelectionChanged;
         TimeLineListControl.KeyDown += OnKeyDown;
         ListViewTimePoints.KeyDown += OnKeyDown;
@@ -94,8 +97,51 @@ public partial class ProfileSettingsWindow : MyWindow
             });
     }
 
-    private void OnGlobalUndoRedoKeyDown(object? sender, KeyEventArgs e)
+    // 记忆用户自定义的窗口大小，重启后保持。（issue #1687）
+    private const string WindowBoundsStorageKey = "ProfileSettingsWindow.Bounds";
+
+    private void RestoreWindowBounds()
     {
+        try
+        {
+            var raw = GlobalStorageService.GetValue(WindowBoundsStorageKey);
+            if (string.IsNullOrWhiteSpace(raw))
+            {
+                return;
+            }
+            var parts = raw.Split('|');
+            if (parts.Length >= 2 &&
+                double.TryParse(parts[0], out var width) && width > 200 &&
+                double.TryParse(parts[1], out var height) && height > 200)
+            {
+                Width = width;
+                Height = height;
+            }
+            if (parts.Length >= 3 && parts[2] == "Maximized")
+            {
+                WindowState = WindowState.Maximized;
+            }
+        }
+        catch
+        {
+            // 忽略恢复窗口大小失败
+        }
+    }
+
+    private void SaveWindowBounds()
+    {
+        try
+        {
+            GlobalStorageService.SetValue(WindowBoundsStorageKey,
+                $"{Width}|{Height}|{(WindowState == WindowState.Maximized ? "Maximized" : "Normal")}");
+        }
+        catch
+        {
+            // 忽略保存窗口大小失败
+        }
+    }
+
+    private void OnGlobalUndoRedoKeyDown(object? sender, KeyEventArgs e)    {
         // 焦点位于文本输入框时，保留其自身的撤销/重做行为
         if (FocusManager?.GetFocusedElement() is TextBox)
             return;
