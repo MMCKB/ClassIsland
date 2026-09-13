@@ -414,7 +414,9 @@
                               HorizontalAlignment="Left">
                         <ComboBox.Styles>
                             <Style Selector="ComboBoxItem">
-                                <Setter Property="MinHeight" Value="32"/>
+                                <!-- 固定条目高度：字体列表条目高度不一致时，虚拟化面板在切换字体后
+                                     重新布局可能触发 Avalonia RealizedStackElements 异常导致崩溃（issue #1971） -->
+                                <Setter Property="Height" Value="32"/>
                                 <Setter Property="VerticalContentAlignment" Value="Center"/>
                             </Style>
                             <Style Selector="#FontComboBox /template/ Popup#PART_Popup">
