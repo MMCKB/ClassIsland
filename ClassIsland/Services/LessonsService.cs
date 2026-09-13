@@ -154,6 +154,7 @@ public class LessonsService : ObservableRecipient, ILessonsService
         // 加载预定的临时课表
         if (Profile.OrderedSchedules.TryGetValue(date.Date, out var orderedScheduleInfo)
             && Profile.ClassPlans.TryGetValue(orderedScheduleInfo.ClassPlanId, out var orderedClassPlan)
+            && orderedClassPlan.IsEnabled
             && (!orderedClassPlan.IsOverlay || Profile.IsOverlayClassPlanEnabled))
         {
             guid = orderedScheduleInfo.ClassPlanId;
@@ -162,6 +163,7 @@ public class LessonsService : ObservableRecipient, ILessonsService
         // 加载临时课表
         if (Profile.TempClassPlanId != null &&
             Profile.ClassPlans.TryGetValue(Profile.TempClassPlanId ?? Guid.Empty, out var tempClassPlan) &&
+            tempClassPlan.IsEnabled &&
             Profile.TempClassPlanSetupTime.Date >= date.Date)
         {
             guid = Profile.TempClassPlanId;
