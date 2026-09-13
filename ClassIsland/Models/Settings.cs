@@ -93,6 +93,7 @@ public class Settings : ObservableRecipient, ILessonControlSettings, INotificati
     private int _wallpaperAutoUpdateIntervalSeconds = 60;
     private bool _isFallbackModeEnabled = true;
     private string _mainWindowFont = MainWindow.DefaultFontFamilyKey;
+    private string _windowRuleExclusions = "";
     private ObservableDictionary<string, object?> _miniInfoProviderSettings = new();
     private string? _selectedMiniInfoProvider = "d9fc55d6-8061-4c21-b521-6b0532ff735f";
     private WeatherInfo _lastWeatherInfo = new();
@@ -1182,6 +1183,21 @@ public class Settings : ObservableRecipient, ILessonControlSettings, INotificati
         {
             if (value.Equals(_mainWindowFontWeight2)) return;
             _mainWindowFontWeight2 = value;
+            OnPropertyChanged();
+        }
+    }
+
+    /// <summary>
+    /// 前台窗口规则全局排除项，每行一个进程名或窗口类名。当前台窗口命中排除项时，
+    /// 所有前台窗口相关规则视为不满足。（issue #1281）
+    /// </summary>
+    public string WindowRuleExclusions
+    {
+        get => _windowRuleExclusions;
+        set
+        {
+            if (value == _windowRuleExclusions) return;
+            _windowRuleExclusions = value;
             OnPropertyChanged();
         }
     }

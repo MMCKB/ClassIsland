@@ -1,5 +1,6 @@
 ﻿using System;
 using ClassIsland.Core.Abstractions.Services;
+using System.Linq;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -23,11 +24,12 @@ public class WindowRuleService : IWindowRuleService
 
     private bool _isMoving = false;
 
-    public WindowRuleService(ILogger<WindowRuleService> logger, IRulesetService rulesetService)
+    public WindowRuleService(ILogger<WindowRuleService> logger, IRulesetService rulesetService, SettingsService settingsService)
     {
         Logger = logger;
         RulesetService = rulesetService;
-        
+        SettingsService = settingsService;
+
         ForegroundWindowChanged += ((_, _) => RulesetService.NotifyStatusChanged());
         PlatformServices.WindowPlatformService.RegisterForegroundWindowChangedEvent((_, e) => ForegroundWindowChanged?.Invoke(this, e));
 
@@ -35,6 +37,19 @@ public class WindowRuleService : IWindowRuleService
         RulesetService.RegisterRuleHandler("classisland.windows.text", TextHandler);
         RulesetService.RegisterRuleHandler("classisland.windows.status", StatusHandler);
         RulesetService.RegisterRuleHandler("classisland.windows.processName", ProcessNameHandler);
+    }
+
+    private SettingsService SettingsService { get; }
+
+    /// <summary>
+    /// 判断给定进程名/窗口类名是否命中全局排除项。（issue #1281）
+    /// </summary>
+    private bool IsExcluded(string value)
+    {
+        var exclusions = SettingsService.Settings.WindowRuleExclusions
+            .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        return exclusions.Any(x => !string.IsNullOrWhiteSpace(x) &&
+                                   value.Contains(x, StringComparison.OrdinalIgnoreCase));
     }
 
     private unsafe bool ProcessNameHandler(object? settings)
@@ -49,6 +64,10 @@ public class WindowRuleService : IWindowRuleService
         try
         {
             var process = Process.GetProcessById((int)pid);
+            if (IsExcluded(process.ProcessName))
+            {
+                return false;
+            }
             return s.IsMatching(process.ProcessName);
         }
         catch (Exception e)
@@ -96,8 +115,13 @@ public class WindowRuleService : IWindowRuleService
     private bool ClassNameHandler(object? settings)
     {
         if (settings is not StringMatchingSettings s) return false;
-        return s.IsMatching(PlatformServices.WindowPlatformService.GetWindowClassName(PlatformServices.WindowPlatformService
-            .ForegroundWindowHandle));
+        var className = PlatformServices.WindowPlatformService.GetWindowClassName(PlatformServices.WindowPlatformService
+            .ForegroundWindowHandle);
+        if (IsExcluded(className))
+        {
+            return false;
+        }
+        return s.IsMatching(className);
     }
 
 
