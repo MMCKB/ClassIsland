@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -23,6 +24,8 @@ public class AudioService(ILogger<AudioService> logger) : IAudioService
     private ILogger<AudioService> Logger { get; } = logger;
 
     private RefCounted<AudioPlaybackDevice>? _sharedAudioPlaybackDevice;
+
+    private readonly Dictionary<string, RefCounted<AudioPlaybackDevice>> _playbackDeviceCache = new();
 
     private object _audioPlaybackDeviceInitializeLock = new();
 
@@ -92,11 +95,20 @@ public class AudioService(ILogger<AudioService> logger) : IAudioService
         
     }
 
-    public Task PlayAudioAsync(Stream audio, float volume, CancellationToken? cancellationToken = null) => Task.Run(async () =>
+    public Task PlayAudioAsync(Stream audio, float volume, CancellationToken? cancellationToken = null) =>
+        PlayAudioAsync(audio, volume, null, cancellationToken);
+
+    public Task PlayAudioAsync(Stream audio, float volume, string? playbackDeviceName,
+        CancellationToken? cancellationToken = null) =>
+        Task.Run(() => PlayAudioCoreAsync(audio, volume, TryRentPlaybackDeviceLeaseAsync(playbackDeviceName),
+            cancellationToken));
+
+    private async Task PlayAudioCoreAsync(Stream audio, float volume,
+        Task<RefCounted<AudioPlaybackDevice>.Lease?> leaseTask, CancellationToken? cancellationToken)
     {
         using var audioStream = audio;
         cancellationToken ??= CancellationToken.None;
-        using var lease = await TryInitializeDefaultPlaybackDeviceSafeAsync();
+        using var lease = await leaseTask;
         if (lease == null)
         {
             return;
@@ -126,6 +138,71 @@ public class AudioService(ILogger<AudioService> logger) : IAudioService
         void OnPlayerOnPlaybackEnded(object? sender, EventArgs args)
         {
             tcs.TrySetResult(true);
+        }
+    }
+
+    private async Task<RefCounted<AudioPlaybackDevice>.Lease?> TryRentPlaybackDeviceLeaseAsync(string? deviceName)
+    {
+        if (string.IsNullOrWhiteSpace(deviceName))
+        {
+            return await TryInitializeDefaultPlaybackDeviceSafeAsync();
+        }
+
+        var lease = await Task.Run(() =>
+        {
+            lock (_audioPlaybackDeviceInitializeLock)
+            {
+                if (_playbackDeviceCache.TryGetValue(deviceName, out var cached) && !cached.IsValueDisposed)
+                {
+                    Logger.LogDebug("使用了缓存的音频设备 {}", deviceName);
+                    return cached.Rent();
+                }
+
+                try
+                {
+                    // 刷新设备列表，保证随后取用的设备 Id 指针有效。
+                    AudioEngine.UpdateDevicesInfo();
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex, "刷新音频设备列表失败");
+                }
+
+                var deviceInfo = AudioEngine.PlaybackDevices.FirstOrDefault(x => x.Name == deviceName);
+                if (deviceInfo == default)
+                {
+                    Logger.LogWarning("找不到音频输出设备 {}，回退到默认设备播放", deviceName);
+                    return null;
+                }
+
+                try
+                {
+                    var device = AudioEngine.InitializePlaybackDevice(deviceInfo, IAudioService.DefaultAudioFormat);
+                    device.MasterMixer.Volume = 1.0f;
+                    device.Start();
+                    _playbackDeviceCache[deviceName] = new RefCounted<AudioPlaybackDevice>(device);
+                    return _playbackDeviceCache[deviceName].Rent();
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex, "初始化音频设备 {} 失败，回退到默认设备播放", deviceName);
+                    return null;
+                }
+            }
+        });
+
+        return lease ?? await TryInitializeDefaultPlaybackDeviceSafeAsync();
+    }
+
+    public Task<List<string>> GetPlaybackDeviceNamesAsync() => Task.Run(() =>
+    {
+        lock (_audioPlaybackDeviceInitializeLock)
+        {
+            AudioEngine.UpdateDevicesInfo();
+            return AudioEngine.PlaybackDevices
+                .Where(x => !string.IsNullOrEmpty(x.Name))
+                .Select(x => x.Name)
+                .ToList();
         }
     });
 
