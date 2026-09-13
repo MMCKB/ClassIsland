@@ -242,7 +242,7 @@ public partial class App
         services.AddTrigger<UriTrigger, UriTriggerSettingsControl>();
         services.AddTrigger<TrayMenuTrigger, TrayMenuTriggerSettingsControl>();
         services.AddTrigger<CronTrigger, CronTriggerSettingsControl>();
-        services.AddTrigger<AppStartupTrigger>();
+        services.AddTrigger<AppStartupTrigger, AppStartupTriggerSettingsControl>();
         services.AddTrigger<AppStoppingTrigger>();
         services.AddTrigger<OnClassTrigger>();
         services.AddTrigger<OnBreakingTimeTrigger>();
@@ -270,6 +270,7 @@ public partial class App
         services.AddAction<RunAction, RunActionSettingsControl>();
         services.AddAction<NotificationAction, NotificationActionSettingsControl>();
         services.AddAction<SleepAction, SleepActionSettingsControl>();
+        services.AddAction<WaitNetworkAction, WaitNetworkActionSettingsControl>();
         services.AddAction<ModifyAppSettingsAction, ModifyAppSettingsActionSettingsControl>();
         services.AddAction<WeatherNotificationAction, WeatherNotificationActionSettingControl>();
         services.AddAction<AppQuitAction>();

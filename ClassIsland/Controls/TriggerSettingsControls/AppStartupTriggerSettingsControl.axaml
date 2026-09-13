@@ -1,0 +1,25 @@
+<ci:TriggerSettingsControlBase x:Class="ClassIsland.Controls.TriggerSettingsControls.AppStartupTriggerSettingsControl"
+                               x:TypeArguments="triggers:AppStartupTriggerSettings"
+                               xmlns="https://github.com/avaloniaui"
+                               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                               xmlns:ci="http://classisland.tech/schemas/xaml/core"
+                               xmlns:local="clr-namespace:ClassIsland.Controls.TriggerSettingsControls"
+                               xmlns:triggers="clr-namespace:ClassIsland.Models.Automation.Triggers"
+                               mc:Ignorable="d"
+                               d:DesignHeight="450" d:DesignWidth="800">
+    <StackPanel DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:AppStartupTriggerSettingsControl}}"
+                Spacing="4"
+                Orientation="Horizontal">
+        <ToggleSwitch IsChecked="{Binding Settings.IsWaitNetworkEnabled}"
+                      Content="等待网络连接"
+                      ToolTip.Tip="触发自动化前等待网络连接，适用于启动后需要一段时间才能联网的网络环境。" />
+        <ci:Field Prefix="最多" Suffix="秒">
+            <NumericUpDown MinWidth="110"
+                           Minimum="0"
+                           Value="{Binding Settings.Timeout, Converter={x:Static ci:NotNaNConverter.Instance}}"
+                           ToolTip.Tip="等待网络连接的最长时间。超过此时间后，无论网络是否连接都会触发自动化。设为 0 表示一直等待网络连接。" />
+        </ci:Field>
+    </StackPanel>
+</ci:TriggerSettingsControlBase>

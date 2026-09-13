@@ -1,0 +1,23 @@
+<ci:ActionSettingsControlBase x:Class="ClassIsland.Controls.ActionSettingsControls.WaitNetworkActionSettingsControl"
+                              x:TypeArguments="actionSettings:WaitNetworkActionSettings"
+                              d:DataContext="{d:DesignInstance Type=local:WaitNetworkActionSettingsControl}"
+                              xmlns="https://github.com/avaloniaui"
+                              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                              xmlns:ci="http://classisland.tech/schemas/xaml/core"
+                              xmlns:local="clr-namespace:ClassIsland.Controls.ActionSettingsControls"
+                              xmlns:actionSettings="clr-namespace:ClassIsland.Models.Actions">
+    <StackPanel HorizontalAlignment="Left"
+                Spacing="6"
+                Orientation="Horizontal">
+        <ci:Field Suffix="秒">
+            <NumericUpDown MinWidth="147"
+                           Minimum="0"
+                           Value="{Binding Settings.Timeout, Converter={x:Static ci:NotNaNConverter.Instance}}"
+                           ToolTip.Tip="等待网络连接的最长时间。设为 0 表示一直等待，直到网络连接成功。" />
+        </ci:Field>
+        <TextBlock VerticalAlignment="Center"
+                   Opacity="0.6"
+                   Text="最长等待网络连接的时间，设为 0 表示一直等待。" />
+    </StackPanel>
+</ci:ActionSettingsControlBase>
