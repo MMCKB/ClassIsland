@@ -77,15 +77,19 @@ public partial class AboutSettingsPage : SettingsPageBase
         });
     }
 
+    private string? _diagInfoCache;
+
     private async void ButtonDiagnosticInfo_OnClick(object sender, RoutedEventArgs e)
     {
-        var diagInfo = ViewModel.DiagnosticService.GetDiagnosticInfo();
+        // 构建一次并缓存，复制时直接复用，避免在高内存占用下重复分配导致崩溃。（issue #1423）
+        _diagInfoCache = ViewModel.DiagnosticService.GetDiagnosticInfo();
         var dialog = new ContentDialog()
         {
             Title = "诊断信息",
             Content = new TextBox()
             {
-                Text = diagInfo
+                Text = _diagInfoCache,
+                IsReadOnly = true
             },
             IsSecondaryButtonEnabled = true,
             PrimaryButtonText = "确定",
@@ -101,7 +105,8 @@ public partial class AboutSettingsPage : SettingsPageBase
         bool success = false;
         try
         {
-            await TopLevel.GetTopLevel(this)?.Clipboard?.SetTextAsync(ViewModel.DiagnosticService.GetDiagnosticInfo());
+            await TopLevel.GetTopLevel(this)?.Clipboard?.SetTextAsync(_diagInfoCache ??
+                ViewModel.DiagnosticService.GetDiagnosticInfo());
             success = true;
         }
         catch (Exception ex)
