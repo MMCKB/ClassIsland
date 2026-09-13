@@ -173,9 +173,10 @@ public partial class ScheduleComponent : ComponentBase<LessonControlSettings>, I
 
     private void LessonsServiceOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(LessonsService.CurrentClassPlan))
+        if (e.PropertyName is nameof(LessonsService.CurrentClassPlan) or nameof(LessonsService.IsClassPlanEnabled))
         {
             CurrentTimeStateChanged();
+            UpdateTomorrowVisibility();
         }
     }
 
@@ -187,9 +188,10 @@ public partial class ScheduleComponent : ComponentBase<LessonControlSettings>, I
 
     private void CurrentTimeStateChanged()
     {
-        IsAfterSchool =
-            LessonsService.CurrentState == TimeState.AfterSchool ||
-            LessonsService.CurrentClassPlan == null;
+        // 关闭“加载课表”时不应视为放学，否则会显示明日课表（issue #828）。
+        IsAfterSchool = LessonsService.IsClassPlanEnabled &&
+                        (LessonsService.CurrentState == TimeState.AfterSchool ||
+                         LessonsService.CurrentClassPlan == null);
     }
 
     public override void OnMigrated(Guid sourceId, object? settings)
@@ -220,6 +222,12 @@ public partial class ScheduleComponent : ComponentBase<LessonControlSettings>, I
 
     private void UpdateTomorrowVisibility()
     {
+        // 关闭“加载课表”后不显示任何课表，包括明日课表（issue #828）。
+        if (!LessonsService.IsClassPlanEnabled)
+        {
+            PseudoClasses.Set(":show-tomorrow-schedule-on-empty", false);
+            return;
+        }
         var showOnEmpty = Settings.TomorrowScheduleShowMode == 3;
         if (!showOnEmpty)
         {
