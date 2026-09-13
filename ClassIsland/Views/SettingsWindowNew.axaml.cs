@@ -661,6 +661,10 @@ public partial class SettingsWindowNew : MyWindow, INavigationPageFactory
     {
         // Linux 下 UseShellExecute 无法直接打开目录，需交给 xdg-open；macOS 使用 open。（issue #1895）
         var fullPath = Path.GetFullPath(path);
+        if (OperatingSystem.IsAndroid() || OperatingSystem.IsIOS())
+        {
+            throw new PlatformNotSupportedException("当前平台不支持打开本地文件目录。");
+        }
         if (OperatingSystem.IsLinux())
         {
             Process.Start(new ProcessStartInfo("xdg-open", fullPath)

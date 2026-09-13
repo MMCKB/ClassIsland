@@ -258,7 +258,7 @@
                                            Source="{Binding Images[icon]}" Height="22" Width="22" />
                                     <TextBlock Grid.Column="1" Margin="4 0 8 0"
                                                Text="{Binding Type}" VerticalAlignment="Center"
-                                               FontSize="{DynamicResource MainWindowSecondaryFontSize}" />
+                                               FontSize="{DynamicResource MainWindowBodyFontSize}" />
                                 </Grid>
                             </Border>
                         </Panel>
