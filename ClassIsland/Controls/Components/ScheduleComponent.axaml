@@ -78,7 +78,7 @@
     <Grid ColumnDefinitions="Auto,*" DataContext="{Binding RelativeSource={RelativeSource AncestorType=local:ScheduleComponent}}">
         <!-- 当前启用课表名称（issue #1509） -->
         <TextBlock Grid.Column="1"
-                   Text="{Binding LessonsService.CurrentClassPlan.Name, FallbackValue=}"
+                   Text="{Binding LessonsService.CurrentClassPlan.Name}"
                    IsVisible="{Binding Settings.ShowCurrentClassPlanName}"
                    HorizontalAlignment="Left"
                    VerticalAlignment="Center"
