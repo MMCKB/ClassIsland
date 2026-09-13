@@ -59,41 +59,10 @@ public class ClassPlan : AttachableSettingsObject
         var displayTimePoints = TimeLayout.Layouts
             .Where(x => x.TimeType is 0 or 1 or 2)
             .ToList();
-        ObservableCollection<TimeLayoutItem> items = [.. displayTimePoints.Select(x => x)];
-        List<TimeLayoutItem> remove = [];
-        // 正向搜索
-        var isPrevEnabled = true;
-        for (var i = 0; i < displayTimePoints.Count; i++)
-        {
-            if (timeLayoutMap.TryGetValue(items[i], out var info))
-            {
-                isPrevEnabled = info.IsEnabled;
-            }
-
-            if (!isPrevEnabled)
-            {
-                remove.Add(displayTimePoints[i]);
-            }
-        }
-        // 反向搜索
-        isPrevEnabled = true;
-        for (var i = displayTimePoints.Count - 1; i >= 0; i--)
-        {
-            if (timeLayoutMap.TryGetValue(items[i], out var info))
-            {
-                isPrevEnabled = info.IsEnabled;
-            }
-
-            if (!isPrevEnabled)
-            {
-                remove.Add(displayTimePoints[i]);
-            }
-        }
-
-        foreach (var i in remove)
-        {
-            items.Remove(i);
-        }
+        // 仅移除被禁用的课程时间点本身，保留其相邻的课间与分割线，
+        // 否则禁用课程会导致其前后分割线被隐藏、课间休息时间点失效。（issue #1090）
+        var items = new ObservableCollection<TimeLayoutItem>(displayTimePoints
+            .Where(x => !timeLayoutMap.TryGetValue(x, out var info) || info.IsEnabled));
         return items;
     }
 
