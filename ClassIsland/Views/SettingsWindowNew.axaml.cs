@@ -570,6 +570,26 @@ public partial class SettingsWindowNew : MyWindow, INavigationPageFactory
         ViewModel.IsDrawerOpen = true;
     }
 
+    private async void MenuItemCopyPageLink_OnClick(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var id = string.IsNullOrWhiteSpace(LaunchSettingsPage) ? "general" : LaunchSettingsPage;
+            var uri = new Uri($"classisland://app/settings/{id}");
+            var topLevel = TopLevel.GetTopLevel(this);
+            if (topLevel?.Clipboard == null)
+            {
+                return;
+            }
+            await topLevel.Clipboard.SetTextAsync(uri.ToString());
+            this.ShowSuccessToast($"已复制页面链接：{uri}");
+        }
+        catch (Exception exception)
+        {
+            this.ShowErrorToast("无法复制页面链接。", exception);
+        }
+    }
+
     private void MenuItemExperimentalSettings_OnClick(object sender, RoutedEventArgs e)
     {
         ViewModel.IsPopupOpen = false;

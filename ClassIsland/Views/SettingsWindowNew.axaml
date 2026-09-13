@@ -179,6 +179,8 @@
                             <commands:FluentIcon Glyph="&#xEBAC;" />
                             <Button.Flyout>
                                 <MenuFlyout>
+                                    <MenuItem Icon="{controls:FluentIcon &#xE167;}" Header="复制页面链接"
+                                              Click="MenuItemCopyPageLink_OnClick" />
                                     <MenuItem Icon="{controls:FluentIcon &#xE508;}" Header="实验性功能…"
                                               Click="MenuItemExperimentalSettings_OnClick" />
                                     <MenuItem Icon="{controls:FluentIcon &#xF485;}"
