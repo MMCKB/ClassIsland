@@ -15,6 +15,7 @@
           x:Name="Root"
           Classes.TimeSeparatorShowing="{Binding IsTimeSeparatorShowing}"
           Classes.ShowSeconds="{Binding Settings.ShowSeconds}"
+          Classes.Hour12="{Binding Settings.Is12HourClock}"
           DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:ClockComponent}}">
         <Grid.Styles>
             <Style Selector="Grid#Root">
@@ -28,10 +29,21 @@
                 <Style Selector="^.ShowSeconds TextBlock#TextBlock1">
                     <Setter Property="Text" Value="{Binding CurrentTime, StringFormat={}{0:HH:mm:ss}}" />
                 </Style>
+                <!-- 12小时制（issue #1103）：置于 ShowSeconds 之后以覆盖同时命中两条规则的默认格式 -->
+                <Style Selector="^.Hour12 TextBlock#TextBlock1">
+                    <Setter Property="Text" Value="{Binding CurrentTime, StringFormat={}{0:h:mm tt}}" />
+                </Style>
+                <Style Selector="^.Hour12.ShowSeconds TextBlock#TextBlock1">
+                    <Setter Property="Text" Value="{Binding CurrentTime, StringFormat={}{0:h:mm:ss tt}}" />
+                </Style>
+                <Style Selector="^.Hour12 TextBlock#TextBlockHour">
+                    <Setter Property="Text" Value="{Binding CurrentTime, StringFormat={}{0:hh}}" />
+                </Style>
             </Style>
         </Grid.Styles>
         <TextBlock x:Name="TextBlock1" />
-        <TextBlock HorizontalAlignment="Left"
+        <TextBlock x:Name="TextBlockHour"
+                   HorizontalAlignment="Left"
                    Text="{Binding CurrentTime, StringFormat={}{0:HH}}"
                    Classes.hidden="{Binding IsTimeSeparatorShowing}"/>
         <TextBlock HorizontalAlignment="Right"

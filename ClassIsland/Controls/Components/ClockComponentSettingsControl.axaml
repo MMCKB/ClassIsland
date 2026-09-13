@@ -41,6 +41,14 @@
                     <ToggleSwitch IsChecked="{Binding Settings.FlashTimeSeparator, Mode=TwoWay}"/>
                 </controls2:SettingsExpander.Footer>
             </controls2:SettingsExpander>
+
+            <controls2:SettingsExpander IconSource="{ci:FluentIconSource &#xE9CE;}"
+                                        Header="使用12小时制"
+                                        Description="以 12 小时制（上午/下午）显示时间。">
+                <controls2:SettingsExpander.Footer>
+                    <ToggleSwitch IsChecked="{Binding Settings.Is12HourClock, Mode=TwoWay}"/>
+                </controls2:SettingsExpander.Footer>
+            </controls2:SettingsExpander>
         </StackPanel>
     </ScrollViewer>
 </controls1:ComponentBase>

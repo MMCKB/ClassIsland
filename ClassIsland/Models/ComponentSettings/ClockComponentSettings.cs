@@ -42,4 +42,17 @@ public class ClockComponentSettings: ObservableRecipient
             OnPropertyChanged();
         }
     }
+
+    private bool _is12HourClock = false;
+
+    public bool Is12HourClock
+    {
+        get => _is12HourClock;
+        set
+        {
+            if (value == _is12HourClock) return;
+            _is12HourClock = value;
+            OnPropertyChanged();
+        }
+    }
 }
