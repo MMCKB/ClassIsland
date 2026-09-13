@@ -246,6 +246,19 @@ public partial class CountDownComponent : ComponentBase<CountDownComponentSettin
         return (firstCpDate + firstTl.StartTime, lastCpDate + lastTl.EndTime);
     }
 
+    private static int CountWorkdays(DateTime startDate, DateTime endDate)
+    {
+        var count = 0;
+        for (var d = startDate; d <= endDate; d = d.AddDays(1))
+        {
+            if (d.DayOfWeek is not (DayOfWeek.Saturday or DayOfWeek.Sunday))
+            {
+                count++;
+            }
+        }
+        return count;
+    }
+
     private void UpdateContent()
     {
         var now = ExactTimerService.GetCurrentLocalDateTime();
@@ -265,8 +278,15 @@ public partial class CountDownComponent : ComponentBase<CountDownComponentSettin
 
         var totalTime = end - start;
         var totalSeconds = totalTime.TotalSeconds;
+        // “仅工作日”模式下，%D 改为统计剩余的自然日中周一至周五的天数。（issue #873）
+        var daysLeftText = Math.Ceiling(delta.TotalDays).ToString(CultureInfo.InvariantCulture);
+        if (Settings.IsWorkdayOnlyEnabled && Settings.CountdownSource == 0)
+        {
+            daysLeftText = CountWorkdays(now.Date.AddDays(1), end.Date)
+                .ToString(CultureInfo.InvariantCulture);
+        }
         DaysLeft = Settings.CustomStringFormat
-            .Replace("%D", Math.Ceiling(delta.TotalDays).ToString(CultureInfo.InvariantCulture))
+            .Replace("%D", daysLeftText)
             .Replace("%H", Math.Ceiling(delta.TotalHours).ToString(CultureInfo.InvariantCulture))
             .Replace("%M", Math.Ceiling(delta.TotalMinutes).ToString(CultureInfo.InvariantCulture))
             .Replace("%S", Math.Ceiling(delta.TotalSeconds).ToString(CultureInfo.InvariantCulture))

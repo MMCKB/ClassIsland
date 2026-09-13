@@ -335,4 +335,20 @@ public class CountDownComponentSettings : ObservableRecipient
             OnPropertyChanged();
         }
     }
+
+    private bool _isWorkdayOnlyEnabled = false;
+
+    /// <summary>
+    /// 倒计时时仅统计工作日（周一至周五），跳过周末。（issue #873）
+    /// </summary>
+    public bool IsWorkdayOnlyEnabled
+    {
+        get => _isWorkdayOnlyEnabled;
+        set
+        {
+            if (value == _isWorkdayOnlyEnabled) return;
+            _isWorkdayOnlyEnabled = value;
+            OnPropertyChanged();
+        }
+    }
 }

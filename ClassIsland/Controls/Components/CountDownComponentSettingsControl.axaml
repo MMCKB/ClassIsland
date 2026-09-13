@@ -75,6 +75,20 @@
                             Width="120" />
                     </controls3:SettingsExpanderItem.Footer>
                 </controls3:SettingsExpanderItem>
+                <controls3:SettingsExpanderItem Content="仅工作日"
+                                                Description="倒计时时只统计周一至周五，跳过周末。"
+                                                Classes="has-radius">
+                    <controls3:SettingsExpanderItem.IsVisible>
+                        <Binding Path="Settings.CountdownSource" Converter="{x:Static ObjectConverters.Equal}">
+                            <Binding.ConverterParameter>
+                                <x:Int32>0</x:Int32>
+                            </Binding.ConverterParameter>
+                        </Binding>
+                    </controls3:SettingsExpanderItem.IsVisible>
+                    <controls3:SettingsExpanderItem.Footer>
+                        <ToggleSwitch IsChecked="{Binding Settings.IsWorkdayOnlyEnabled, Mode=TwoWay}"/>
+                    </controls3:SettingsExpanderItem.Footer>
+                </controls3:SettingsExpanderItem>
                 <!-- 周期 -->
                 <controls3:SettingsExpanderItem>
                     <controls3:SettingsExpanderItem.IsVisible>
