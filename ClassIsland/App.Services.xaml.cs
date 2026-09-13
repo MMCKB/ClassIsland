@@ -319,9 +319,10 @@ public partial class App
         // services.AddTutorialGroupByUri(new Uri("avares://ClassIsland/Assets/Tutorials/classisland.sp.json"));
         services.AddTutorialGroupByUri(new Uri("avares://ClassIsland/Assets/Tutorials/classisland.getStarted.json"));
         // Plugins
-        if (!ApplicationCommand.Safe && string.IsNullOrWhiteSpace(ApplicationCommand.ImportV1) && string.IsNullOrWhiteSpace(ApplicationCommand.ImportV2))
+        if (string.IsNullOrWhiteSpace(ApplicationCommand.ImportV1) && string.IsNullOrWhiteSpace(ApplicationCommand.ImportV2))
         {
-            PluginService.InitializePlugins(context, services);
+            // 安全模式下仅扫描已安装插件供管理，不加载插件本体。（issue #1923）
+            PluginService.InitializePlugins(context, services, skipLoad: ApplicationCommand.Safe);
         }
     }
 }

@@ -109,7 +109,7 @@ public class PluginService : IPluginService
     /// <summary>
     /// 初始化插件
     /// </summary>
-    public static void InitializePlugins(HostBuilderContext context, IServiceCollection services)
+    public static void InitializePlugins(HostBuilderContext context, IServiceCollection services, bool skipLoad = false)
     {
         if (!Directory.Exists(PluginsRootPath))
         {
@@ -177,6 +177,11 @@ public class PluginService : IPluginService
 
         var suppressMacOsPluginLoadBehavior =
             Environment.GetEnvironmentVariable("ClassIsland_DebugSuppressMacOSPluginLoadBehavior") == "1";
+        // 安全模式下仅扫描已安装插件供管理（查看状态、启用、卸载等），不加载插件本体。（issue #1923）
+        if (skipLoad)
+        {
+            return;
+        }
         // 加载插件
         foreach (var id in loadOrder)
         {
