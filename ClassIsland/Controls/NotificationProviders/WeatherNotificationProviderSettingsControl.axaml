@@ -88,6 +88,37 @@
                         </Grid>
                     </fa:SettingsExpander.Footer>
                 </fa:SettingsExpander>
+                <!-- 预警显示时长自定义（issue #1950） -->
+                <fa:SettingsExpander IconSource="{ci:FluentIconSource &#xF373;}"
+                                     Header="自定义预警显示时长"
+                                     Description="启用后，预警标题和内容的显示时长将使用下方设置的秒数，而不是按文本长度自动计算。"
+                                     IsVisible="{Binding Settings.IsAlertEnabled}">
+                    <fa:SettingsExpander.Footer>
+                        <ToggleSwitch IsChecked="{Binding Settings.IsAlertDurationCustomEnabled, Mode=TwoWay}"/>
+                    </fa:SettingsExpander.Footer>
+                    <StackPanel Orientation="Horizontal" Spacing="24" Margin="0 0 0 8">
+                        <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                            <TextBlock Text="标题时长（秒）" VerticalAlignment="Center"/>
+                            <Slider Width="160" Minimum="1" Maximum="120"
+                                    VerticalAlignment="Center"
+                                    Value="{Binding Settings.AlertTitleDurationSeconds}"
+                                    TickFrequency="1"
+                                    TickPlacement="None"
+                                    IsSnapToTickEnabled="True"
+                                    Classes="auto-tooltip" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                            <TextBlock Text="内容时长（秒）" VerticalAlignment="Center"/>
+                            <Slider Width="160" Minimum="1" Maximum="600"
+                                    VerticalAlignment="Center"
+                                    Value="{Binding Settings.AlertContentDurationSeconds}"
+                                    TickFrequency="1"
+                                    TickPlacement="None"
+                                    IsSnapToTickEnabled="True"
+                                    Classes="auto-tooltip" />
+                        </StackPanel>
+                    </StackPanel>
+                </fa:SettingsExpander>
             </StackPanel>
         </ScrollViewer>
     </Grid>

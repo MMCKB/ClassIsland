@@ -67,4 +67,43 @@ public class WeatherNotificationProviderSettings : ObservableRecipient, IWeather
             OnPropertyChanged();
         }
     }
+
+    private bool _isAlertDurationCustomEnabled = false;
+
+    public bool IsAlertDurationCustomEnabled
+    {
+        get => _isAlertDurationCustomEnabled;
+        set
+        {
+            if (value == _isAlertDurationCustomEnabled) return;
+            _isAlertDurationCustomEnabled = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private double _alertTitleDurationSeconds = 5.0;
+
+    public double AlertTitleDurationSeconds
+    {
+        get => _alertTitleDurationSeconds;
+        set
+        {
+            if (value.Equals(_alertTitleDurationSeconds)) return;
+            _alertTitleDurationSeconds = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private double _alertContentDurationSeconds = 20.0;
+
+    public double AlertContentDurationSeconds
+    {
+        get => _alertContentDurationSeconds;
+        set
+        {
+            if (value.Equals(_alertContentDurationSeconds)) return;
+            _alertContentDurationSeconds = value;
+            OnPropertyChanged();
+        }
+    }
 }

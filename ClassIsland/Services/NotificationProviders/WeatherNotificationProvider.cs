@@ -144,17 +144,24 @@ public class WeatherNotificationProvider : NotificationProviderBase<WeatherNotif
             if (t <= 10) t = 10.0;
             if (t >= 90) t = 90.0;
             var ts = TimeSpanHelper.FromSecondsSafe(t);
+            // 支持自定义预警标题/内容的显示时长；未启用时保持自动计算行为。（issue #1950）
+            var titleDuration = Settings.IsAlertDurationCustomEnabled
+                ? TimeSpanHelper.FromSecondsSafe(Math.Clamp(Settings.AlertTitleDurationSeconds, 1, 600))
+                : TimeSpan.FromSeconds(5);
+            var contentDuration = Settings.IsAlertDurationCustomEnabled
+                ? TimeSpanHelper.FromSecondsSafe(Math.Clamp(Settings.AlertContentDurationSeconds, 1, 600))
+                : ts * 2;
             IAppHost.GetService<ILogger<WeatherNotificationProvider>>().LogTrace("单次预警显示时长：{}", ts);
             ShowNotification(new NotificationRequest()
             {
                 MaskContent = new NotificationContent(new WeatherNotificationProviderControl(true, i, ts))
                 {
                     SpeechContent = i.Title,
-                    Duration = TimeSpan.FromSeconds(5)
+                    Duration = titleDuration
                 },
                 OverlayContent = new NotificationContent(new WeatherNotificationProviderControl(false, i, ts))
                 {
-                    Duration = ts * 2,
+                    Duration = contentDuration,
                     SpeechContent = i.Detail,
 
                 }
