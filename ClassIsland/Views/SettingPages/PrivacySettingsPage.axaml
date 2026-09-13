@@ -13,7 +13,7 @@
       Loaded="PrivacySettingsPage_OnLoaded"
       Unloaded="PrivacySettingsPage_OnUnloaded">
 
-    <ScrollViewer>
+    <ScrollViewer Padding="0 0 14 0">
         <StackPanel Classes="settings-container animated-intro" Tag="CanPolicyDisable">
             <StackPanel Margin="0 0 0 16">
                 <TextBlock Text="匿名使用情况分析"
