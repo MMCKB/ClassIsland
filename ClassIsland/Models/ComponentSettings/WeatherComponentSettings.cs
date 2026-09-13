@@ -85,7 +85,7 @@ public class WeatherComponentSettings : ObservableRecipient
             OnPropertyChanged();
         }
     }
-}
+
     private bool _isWeatherNoteEnabled = false;
 
     /// <summary>
