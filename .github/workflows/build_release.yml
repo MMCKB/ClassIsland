@@ -59,8 +59,6 @@ jobs:
           submodules: recursive
           ref: ${{ github.event_name != 'workflow_dispatch' && github.ref || github.event.inputs.release_tag }}
       
-      - name: Fetch tags from upstream (forks do not carry tags)
-        run: git fetch --tags https://github.com/ClassIsland/ClassIsland.git
       - name: List files
         run: ls
       
@@ -131,8 +129,6 @@ jobs:
           submodules: recursive
           ref: ${{ github.event_name != 'workflow_dispatch' && github.ref || github.event.inputs.release_tag }}
 
-      - name: Fetch tags from upstream (forks do not carry tags)
-        run: git fetch --tags https://github.com/ClassIsland/ClassIsland.git
       - name: List files
         run: ls
       
@@ -308,8 +304,6 @@ jobs:
           submodules: recursive
           ref: ${{ github.event_name != 'workflow_dispatch' && github.ref || github.event.inputs.release_tag }} 
 
-      - name: Fetch tags from upstream (forks do not carry tags)
-        run: git fetch --tags https://github.com/ClassIsland/ClassIsland.git
       - name: List files
         run: ls
 
