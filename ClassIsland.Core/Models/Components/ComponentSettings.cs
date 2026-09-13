@@ -129,10 +129,6 @@ public class ComponentSettings : ObservableRecipient, IMainWindowCustomizableNod
     [JsonIgnore] internal Guid MigrationSource { get; set; } = Guid.Empty;
 
     /// <summary>
-    /// 这个组件关联的组件注册信息。
-    /// </summary>
-    [JsonIgnore]
-    /// <summary>
     /// 组件的自定义名称。为空时显示组件注册名称。（issue #647）
     /// </summary>
     public string CustomName
@@ -151,6 +147,10 @@ public class ComponentSettings : ObservableRecipient, IMainWindowCustomizableNod
     public string DisplayName =>
         string.IsNullOrWhiteSpace(CustomName) ? (AssociatedComponentInfo.Name ?? NameCache) : CustomName;
 
+    /// <summary>
+    /// 这个组件关联的组件注册信息。
+    /// </summary>
+    [JsonIgnore]
     public ComponentInfo AssociatedComponentInfo =>
         ComponentRegistryService.Registered.FirstOrDefault(x => string.Equals(x.Guid.ToString(), Id, StringComparison.CurrentCultureIgnoreCase)) ?? ComponentInfo.Empty;
 
