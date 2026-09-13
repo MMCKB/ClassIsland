@@ -172,7 +172,9 @@ public class Settings : ObservableRecipient, ILessonControlSettings, INotificati
     private ObservableDictionary<string, string> _officialIndexMirrors = new()
     {
         { "github", "https://github.com" },
-        { "ghproxy", "https://mirror.ghproxy.com/https://github.com" },
+        // mirror.ghproxy.com 已停止服务，且在新环境下无法建立 SSL 连接（issue #516/#849），更换为可用镜像。
+        { "ghproxy", "https://gh-proxy.com/https://github.com" },
+        { "ghfast", "https://ghfast.top/https://github.com" },
         { "moeyy", "https://github.moeyy.xyz/https://github.com" }
     };
     private bool _ignoreSslForPluginMirrors = false;
