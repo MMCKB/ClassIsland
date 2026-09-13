@@ -136,6 +136,7 @@ public class Settings : ObservableRecipient, ILessonControlSettings, INotificati
     private double _speechVolume = 1.0;
     private int _speechSource = 0;
     private string _edgeTtsVoiceName = "zh-CN-XiaoxiaoNeural";
+    private string _edgeTtsPlaybackDevice = "";
     private string _exactTimeServer = "ntp.aliyun.com";
     private bool _isExactTimeEnabled = true;
     private double _timeOffsetSeconds = 0.0;
@@ -1467,6 +1468,20 @@ public class Settings : ObservableRecipient, ILessonControlSettings, INotificati
         {
             if (value == _edgeTtsVoiceName) return;
             _edgeTtsVoiceName = value;
+            OnPropertyChanged();
+        }
+    }
+
+    /// <summary>
+    /// EdgeTTS 朗读使用的音频输出设备名称。为空时使用系统默认音频输出设备。
+    /// </summary>
+    public string EdgeTtsPlaybackDevice
+    {
+        get => _edgeTtsPlaybackDevice;
+        set
+        {
+            if (value == _edgeTtsPlaybackDevice) return;
+            _edgeTtsPlaybackDevice = value;
             OnPropertyChanged();
         }
     }

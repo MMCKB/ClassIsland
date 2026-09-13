@@ -53,4 +53,42 @@ public interface IAudioService : IDisposable
     Task PlayAudioAsync(Stream audio, float volume, CancellationToken? cancellationToken = null);
 
     Task PlayAudioAsync(string filePath, float volume, CancellationToken? cancellationToken = null);
+
+    /// <summary>
+    /// 在指定的音频输出设备上播放音频并等待。若指定的设备不可用，则回退到默认设备播放。
+    /// </summary>
+    /// <param name="audio">音频流</param>
+    /// <param name="volume">音频音量</param>
+    /// <param name="playbackDeviceName">音频输出设备名称；为空时使用系统默认音频输出设备。</param>
+    /// <param name="cancellationToken">用于停止音频播放的取消令牌</param>
+    /// <returns></returns>
+    Task PlayAudioAsync(Stream audio, float volume, string? playbackDeviceName, CancellationToken? cancellationToken = null)
+    {
+        return PlayAudioAsync(audio, volume, cancellationToken);
+    }
+
+    /// <summary>
+    /// 在指定的音频输出设备上播放音频并等待。若指定的设备不可用，则回退到默认设备播放。
+    /// </summary>
+    /// <param name="filePath">音频文件路径</param>
+    /// <param name="volume">音频音量</param>
+    /// <param name="playbackDeviceName">音频输出设备名称；为空时使用系统默认音频输出设备。</param>
+    /// <param name="cancellationToken">用于停止音频播放的取消令牌</param>
+    /// <returns></returns>
+    Task PlayAudioAsync(string filePath, float volume, string? playbackDeviceName, CancellationToken? cancellationToken = null)
+    {
+        return PlayAudioAsync(File.OpenRead(filePath), volume, playbackDeviceName, cancellationToken);
+    }
+
+    /// <summary>
+    /// 枚举当前可用的音频输出设备名称。
+    /// </summary>
+    /// <returns>所有音频输出设备的名称列表。</returns>
+    Task<List<string>> GetPlaybackDeviceNamesAsync()
+    {
+        return Task.FromResult(AudioEngine.PlaybackDevices
+            .Where(x => !string.IsNullOrEmpty(x.Name))
+            .Select(x => x.Name)
+            .ToList());
+    }
 }

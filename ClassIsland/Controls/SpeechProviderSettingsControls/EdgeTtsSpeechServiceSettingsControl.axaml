@@ -1,13 +1,13 @@
 ﻿<ci:SpeechProviderControlBase x:Class="ClassIsland.Controls.SpeechProviderSettingsControls.EdgeTtsSpeechServiceSettingsControl"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:ClassIsland.Controls.SpeechProviderSettingsControls"
              xmlns:ci="http://classisland.tech/schemas/xaml/core"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:controls="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <StackPanel DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:EdgeTtsSpeechServiceSettingsControl}}"
                 Spacing="1">
@@ -26,6 +26,27 @@
                 </ComboBox>
             </ci:Field>
         </controls:SettingsExpanderItem>
-        
+        <controls:SettingsExpanderItem CornerRadius="0"
+                                       Classes="no-radius"
+                                       Description="指定 EdgeTTS 朗读使用的音频输出设备，此设置不会影响系统音频设置；选择“跟随系统默认输出设备”时，将使用系统当前默认输出设备。">
+            <ci:Field Label="音频输出设备">
+                <ComboBox SelectedValueBinding="{Binding DeviceName}"
+                          SelectedValue="{Binding SettingsService.Settings.EdgeTtsPlaybackDevice}"
+                          ItemsSource="{Binding PlaybackDevices}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding DisplayName}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </ci:Field>
+        </controls:SettingsExpanderItem>
+        <controls:SettingsExpanderItem CornerRadius="0"
+                                       Classes="no-radius"
+                                       IsClickEnabled="True"
+                                       Content="测试音频输出设备"
+                                       Description="播放一段内置测试音频，以验证当前的音量与输出设备设置。"
+                                       Click="ButtonTestPlaybackDevice_OnClick"/>
+
     </StackPanel>
 </ci:SpeechProviderControlBase>
