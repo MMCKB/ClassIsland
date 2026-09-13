@@ -122,6 +122,15 @@
                     </controls:SettingsExpander.Footer>
                 </controls:SettingsExpander>
 
+                <!-- 显示当前启用课表名称（issue #1509） -->
+                <controls:SettingsExpander IconSource="{ci:FluentIconSource &#xE8A5;}"
+                                           Header="显示当前启用课表名称"
+                                           Description="在日程组件上方显示当前启用的课表名称。">
+                    <controls:SettingsExpander.Footer>
+                        <ToggleSwitch IsChecked="{Binding Settings.ShowCurrentClassPlanName, Mode=TwoWay}"/>
+                    </controls:SettingsExpander.Footer>
+                </controls:SettingsExpander>
+
                 <!-- 不显示已结束的课程 -->
                 <controls:SettingsExpander IconSource="{ci:FluentIconSource &#xEFBF;}"
                                            Header="不显示已结束的课程"

@@ -21,6 +21,21 @@ public class LessonControlSettings : ObservableRecipient, ILessonControlSettings
     private bool _highlightChangedClass = false;
     private bool _isNonExactCountdownEnabled = false;
     private bool _fadeCompletedClasses = true;
+    private bool _showCurrentClassPlanName = false;
+
+    /// <summary>
+    /// 是否在日程组件上方显示当前启用课表的名称。（issue #1509）
+    /// </summary>
+    public bool ShowCurrentClassPlanName
+    {
+        get => _showCurrentClassPlanName;
+        set
+        {
+            if (value == _showCurrentClassPlanName) return;
+            _showCurrentClassPlanName = value;
+            OnPropertyChanged();
+        }
+    }
 
     public bool ShowExtraInfoOnTimePoint
     {

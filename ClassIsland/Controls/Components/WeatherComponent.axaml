@@ -76,6 +76,15 @@
                     <Border.IsVisible>
                         <Binding Path="Settings.MainWeatherInfoKind" Converter="{x:Static ObjectConverters.Equal}">
                             <Binding.ConverterParameter>
+        <!-- 当前启用课表名称（issue #1509） -->
+        <TextBlock Grid.Column="1"
+                   Text="{Binding LessonsService.CurrentClassPlan.Name, FallbackValue=^{}^"}"
+                   IsVisible="{Binding Settings.ShowCurrentClassPlanName}"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Center"
+                   Margin="0 0 0 2"
+                   FontSize="{DynamicResource MainWindowSecondaryFontSize}"
+                   Classes="l-secondary"/>
                                 <x:Int32>1</x:Int32>
                             </Binding.ConverterParameter>
                         </Binding>
