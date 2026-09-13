@@ -899,9 +899,26 @@ public partial class ProfileSettingsWindow : MyWindow
     
     private async void ButtonDeleteTimeLayout_OnClick(object sender, RoutedEventArgs e)
     {
+        var selected = ViewModel.SelectedTimeLayout;
+        if (selected == null)
+        {
+            return;
+        }
         var key = ViewModel.ProfileService.Profile.TimeLayouts
-            .FirstOrDefault(x => x.Value == ViewModel.SelectedTimeLayout).Key;
-        var c = ViewModel.ProfileService.Profile.ClassPlans.Any(x => x.Value.TimeLayoutId == key);
+            .FirstOrDefault(x => ReferenceEquals(x.Value, selected)).Key;
+        // 档案被整体替换后，包装列表可能与当前档案字典不同步，此时回退到包装列表中查找，
+        // 并同时从两边移除，避免删除操作静默无效。（issue #1896）
+        if (key == Guid.Empty)
+        {
+            var fallback = ViewModel.TimeLayouts.List
+                .FirstOrDefault(x => ReferenceEquals(x.Value, selected));
+            if (fallback.Value != null)
+            {
+                key = fallback.Key;
+            }
+        }
+        var c = key != Guid.Empty &&
+                ViewModel.ProfileService.Profile.ClassPlans.Any(x => x.Value.TimeLayoutId == key);
         const string eventName = "views.ProfileSettingsWindow.timeLayout.remove";
         if (c)
         {
@@ -915,12 +932,26 @@ public partial class ProfileSettingsWindow : MyWindow
             return;
         }
 
+        if (key == Guid.Empty)
+        {
+            this.ShowWarningToast("未找到选中的时间表，请重新选择后再删除。");
+            FlyoutHelper.CloseAncestorFlyout(sender);
+            return;
+        }
+
         SentrySdk.Metrics.EmitCounter(eventName, 1,
         [
             new KeyValuePair<string, object>("IsSuccess", "true")
         ]
         );
         ViewModel.ProfileService.Profile.TimeLayouts.Remove(key);
+        var listEntry = ViewModel.TimeLayouts.List
+            .FirstOrDefault(x => ReferenceEquals(x.Value, selected));
+        if (listEntry.Value != null)
+        {
+            ViewModel.TimeLayouts.List.Remove(listEntry);
+        }
+        ViewModel.SelectedTimeLayout = null;
         FlyoutHelper.CloseAncestorFlyout(sender);
     }
     
