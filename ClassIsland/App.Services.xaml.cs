@@ -245,7 +245,7 @@ public partial class App
         services.AddTrigger<AppStartupTrigger, AppStartupTriggerSettingsControl>();
         services.AddTrigger<AppStoppingTrigger>();
         services.AddTrigger<OnClassTrigger>();
-        services.AddTrigger<OnBreakingTimeTrigger>();
+        services.AddTrigger<OnBreakingTimeTrigger, OnBreakingTimeTriggerSettingsControl>();
         services.AddTrigger<OnAfterSchoolTrigger>();
         services.AddTrigger<CurrentTimeStateChangedTrigger>();
         services.AddTrigger<PreTimePointTrigger, PreTimePointTriggerSettingsControl>();

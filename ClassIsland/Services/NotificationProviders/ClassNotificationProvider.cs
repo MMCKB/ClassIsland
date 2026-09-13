@@ -50,14 +50,11 @@ public class ClassNotificationProvider : NotificationProviderBase<ClassNotificat
 
     private IExactTimeService ExactTimeService { get; }
 
-    private IProfileService ProfileService { get; }
-
-    public ClassNotificationProvider(INotificationHostService notificationHostService, IAttachedSettingsHostService attachedSettingsHostService , ILessonsService lessonsService, IExactTimeService exactTimeService, IProfileService profileService)
+    public ClassNotificationProvider(INotificationHostService notificationHostService, IAttachedSettingsHostService attachedSettingsHostService , ILessonsService lessonsService, IExactTimeService exactTimeService)
     {
         NotificationHostService = notificationHostService;
         LessonsService = lessonsService;
         ExactTimeService = exactTimeService;
-        ProfileService = profileService;
 
         LessonsService.OnClass += OnClass;
         LessonsService.OnBreakingTime += OnBreakingTime;
@@ -307,7 +304,7 @@ public class ClassNotificationProvider : NotificationProviderBase<ClassNotificat
 
         // 课间时 CurrentSubject 是伪科目「课间」，科目上的附加设置不会被命中。
         // 下课提醒需要遵循刚结束课程的科目设置，如科目上关闭了下课提醒则不提醒。（issue #586）
-        var lastClassSubject = GetLastClassSubject();
+        var lastClassSubject = LessonsService.GetLastClassSubject();
         if (lastClassSubject != null)
         {
             return IAttachedSettingsHostService
@@ -316,31 +313,6 @@ public class ClassNotificationProvider : NotificationProviderBase<ClassNotificat
         }
 
         return settings;
-    }
-
-    private Subject? GetLastClassSubject()
-    {
-        var layout = LessonsService.CurrentClassPlan?.TimeLayout;
-        var classes = LessonsService.CurrentClassPlan?.Classes;
-        if (layout == null || classes == null)
-        {
-            return null;
-        }
-        var now = ExactTimeService.GetCurrentLocalDateTime().TimeOfDay;
-        var lastClassItem = layout.Layouts
-            .Reverse()
-            .FirstOrDefault(i => i.TimeType == 0 && i.EndTime < now);
-        if (lastClassItem == null)
-        {
-            return null;
-        }
-        var index = layout.Layouts.Where(i => i.TimeType == 0).ToList().IndexOf(lastClassItem);
-        if (index < 0 || index >= classes.Count)
-        {
-            return null;
-        }
-        return ProfileService.Profile.Subjects.TryGetValue(classes[index].SubjectId, out var subject)
-            ? subject : null;
     }
 
     private ClassNotificationAttachedSettings? GetAttachedSettingsNext()

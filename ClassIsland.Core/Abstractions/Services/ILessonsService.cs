@@ -86,4 +86,11 @@ public interface ILessonsService : INotifyPropertyChanged, INotifyPropertyChangi
     /// <param name="referenceTime">指定日期。默认为当前日期。</param>
     /// <remarks> 2-first, 1-based </remarks>
     ObservableCollection<int> GetCyclePositionsByDate(DateTime? referenceTime = null);
+
+    /// <summary>
+    /// 获取刚刚结束（或正在进行）的课程科目。课间时 <see cref="CurrentSubject"/> 是伪科目“课间”，
+    /// 需要使用此方法获取刚结束课程的科目。
+    /// </summary>
+    /// <returns>刚结束课程的科目；若无法确定则返回 null</returns>
+    Subject? GetLastClassSubject();
 }

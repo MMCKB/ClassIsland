@@ -542,6 +542,35 @@ public class LessonsService : ObservableRecipient, ILessonsService
         return i;
     }
 
+    /// <summary>
+    /// 获取刚刚结束（或正在进行）的课程科目。课间时 <see cref="CurrentSubject"/> 是伪科目“课间”，
+    /// 需要使用此方法获取刚结束课程的科目。（issue #586 / #2002）
+    /// </summary>
+    public Subject? GetLastClassSubject()
+    {
+        var layout = CurrentClassPlan?.TimeLayout;
+        var classes = CurrentClassPlan?.Classes;
+        if (layout == null || classes == null)
+        {
+            return null;
+        }
+        var now = ExactTimeService.GetCurrentLocalDateTime().TimeOfDay;
+        var lastClassItem = layout.Layouts
+            .Reverse()
+            .FirstOrDefault(i => i.TimeType == 0 && i.EndTime < now);
+        if (lastClassItem == null)
+        {
+            return null;
+        }
+        var index = layout.Layouts.Where(i => i.TimeType == 0).ToList().IndexOf(lastClassItem);
+        if (index < 0 || index >= classes.Count)
+        {
+            return null;
+        }
+        return ProfileService.Profile.Subjects.TryGetValue(classes[index].SubjectId, out var subject)
+            ? subject : null;
+    }
+
     public TimeState CurrentOverlayEventStatus
     {
         get => _currentOverlayEventStatus;
