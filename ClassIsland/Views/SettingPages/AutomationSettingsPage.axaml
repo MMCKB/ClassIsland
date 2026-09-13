@@ -47,6 +47,14 @@
                             </StackPanel>
                         </fa:SettingsExpander.Footer>
                     </fa:SettingsExpander>
+                    <fa:SettingsExpander IconSource="{ci:FluentIconSource &#xF4A2;}"
+                                         Header="前台窗口规则全局排除项"
+                                         Description="每行填写一个进程名或窗口类名。当前台窗口命中排除项时，所有前台窗口相关规则（进程/类名/标题等）视为不满足。">
+                        <fa:SettingsExpander.Footer>
+                            <TextBox Text="{Binding ViewModel.SettingsService.Settings.WindowRuleExclusions, Mode=TwoWay}"
+                                     AcceptsReturn="True" MinHeight="56" MaxHeight="120" Width="280"/>
+                        </fa:SettingsExpander.Footer>
+                    </fa:SettingsExpander>
                     <Grid Grid.Row="1"
                           Margin="0 6 0 0"
                           ColumnDefinitions="Auto,*,Auto">
