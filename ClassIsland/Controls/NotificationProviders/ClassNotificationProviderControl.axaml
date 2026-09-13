@@ -31,16 +31,16 @@
             <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal"
                         Margin="12 0">
                 <TextBlock VerticalAlignment="Center" Text="下节课是：" Classes="l-instructive"/>
-                <TextBlock Text="{Binding LessonsService.NextClassSubject.Name}" FontWeight="Bold" FontSize="{DynamicResource MainWindowLargeFontSize}" VerticalAlignment="Center"/>
+                <TextBlock Text="{Binding NextClassName}" FontWeight="Bold" FontSize="{DynamicResource MainWindowLargeFontSize}" VerticalAlignment="Center"/>
                 <TextBlock Margin="6 0 0 0" FontSize="{DynamicResource MainWindowSecondaryFontSize}" VerticalAlignment="Bottom"
-                           Text="{Binding LessonsService.NextClassSubject.TeacherName}"
+                           Text="{Binding NextClassTeacherName}"
                            IsVisible="{Binding ShowTeacherName}"
                            Classes="l-secondary"/>
                 <TextBlock FontSize="{DynamicResource MainWindowSecondaryFontSize}" VerticalAlignment="Bottom" Margin="2 0 0 0"
                            Classes="l-secondary">
-                    <Run Text="{Binding LessonsService.NextClassTimeLayoutItem.StartTime, StringFormat={}{0:hh\\:mm}}">
+                    <Run Text="{Binding NextStartTime, StringFormat={}{0:hh\\:mm}}">
                     </Run><Run Text="-">
-                    </Run><Run Text="{Binding LessonsService.NextClassTimeLayoutItem.EndTime, StringFormat={}{0:hh\\:mm}}"/>
+                    </Run><Run Text="{Binding NextEndTime, StringFormat={}{0:hh\\:mm}}"/>
                 </TextBlock>
             </StackPanel>
         </Grid>
@@ -53,7 +53,7 @@
             <ci:LucideIcon Glyph="&#xe0ff;" VerticalAlignment="Center"
                            FontSize="20" FontWeight="Medium"
                            Height="20" Width="20"/>
-            <TextBlock Text="{Binding LessonsService.CurrentTimeLayoutItem.BreakNameText}" FontSize="{DynamicResource MainWindowEmphasizedFontSize}" Margin="8 0" FontWeight="Bold"/>
+            <TextBlock Text="{Binding BreakNameText}" FontSize="{DynamicResource MainWindowEmphasizedFontSize}" Margin="8 0" FontWeight="Bold"/>
             <ci:LucideIcon Glyph="&#xe250;" VerticalAlignment="Center"
                            FontSize="20" FontWeight="Medium"
                            Height="20" Width="20"/>
@@ -63,24 +63,24 @@
         <Grid x:Key="ClassOffOverlay" ColumnDefinitions="*,*">
             <!-- 课间时间 -->
             <TextBlock Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="12 0">
-                <Run Text="本节" Classes="l-instructive"/><Run Text="{Binding LessonsService.CurrentTimeLayoutItem.BreakNameText, Mode=OneWay}"/><Run Text="长" Classes="l-instructive"/>
-                <Run Text="{Binding NextTimeLayoutDurationHumanized, Mode=OneWay}" FontWeight="Bold"/>
+                <Run Text="本节" Classes="l-instructive"/><Run Text="{Binding BreakNameText}"/><Run Text="长" Classes="l-instructive"/>
+                <Run Text="{Binding BreakDurationText}" FontWeight="Bold"/>
             </TextBlock>
 
             <!-- 科目信息 -->
             <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal"
                         Margin="12 0">
                 <TextBlock VerticalAlignment="Center" Text="下节课是：" Classes="l-instructive"/>
-                <TextBlock Text="{Binding LessonsService.NextClassSubject.Name}" FontWeight="Bold" FontSize="{DynamicResource MainWindowLargeFontSize}" VerticalAlignment="Center"/>
+                <TextBlock Text="{Binding NextClassName}" FontWeight="Bold" FontSize="{DynamicResource MainWindowLargeFontSize}" VerticalAlignment="Center"/>
                 <TextBlock Margin="6 0 0 0" FontSize="{DynamicResource MainWindowSecondaryFontSize}" VerticalAlignment="Bottom"
-                           Text="{Binding LessonsService.NextClassSubject.TeacherName}"
+                           Text="{Binding NextClassTeacherName}"
                            Classes="l-secondary"
                            IsVisible="{Binding ShowTeacherName}"/>
                 <TextBlock Margin="2 0 0 0" FontSize="{DynamicResource MainWindowSecondaryFontSize}" VerticalAlignment="Bottom"
                            Classes="l-secondary">
-                    <Run Text="{Binding LessonsService.NextClassTimeLayoutItem.StartTime, StringFormat={}{0:hh\\:mm}}">
+                    <Run Text="{Binding NextStartTime, StringFormat={}{0:hh\\:mm}}">
                     </Run><Run Text="-">
-                    </Run><Run Text="{Binding LessonsService.NextClassTimeLayoutItem.EndTime, StringFormat={}{0:hh\\:mm}}"/>
+                    </Run><Run Text="{Binding NextEndTime, StringFormat={}{0:hh\\:mm}}"/>
                 </TextBlock>
             </StackPanel>
         </Grid>

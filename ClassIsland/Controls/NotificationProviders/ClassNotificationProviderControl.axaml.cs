@@ -77,6 +77,16 @@ public partial class ClassNotificationProviderControl : UserControl, INotifyProp
 
     public ILessonsService LessonsService { get; } = App.GetService<ILessonsService>();
 
+    // 通知内容应当在触发时刻定格。课间可能短于提醒的显示时长，
+    // 若模板实时绑定课程服务，课间结束后显示的内容会变成下一个时间点的信息。
+    // 因此这里在控件创建（即提醒触发）时对展示用的时间点信息做快照。
+    public string BreakNameText { get; }
+    public string BreakDurationText { get; }
+    public string NextClassName { get; }
+    public string NextClassTeacherName { get; }
+    public TimeSpan NextStartTime { get; }
+    public TimeSpan NextEndTime { get; }
+
     private DispatcherTimer Timer { get; } = new()
     {
         Interval = TimeSpan.FromSeconds(10)
@@ -85,6 +95,12 @@ public partial class ClassNotificationProviderControl : UserControl, INotifyProp
     public ClassNotificationProviderControl(string key)
     {
         InitializeComponent();
+        BreakNameText = LessonsService.CurrentTimeLayoutItem.BreakNameText;
+        BreakDurationText = FormatTimeSpan(LessonsService.CurrentTimeLayoutItem.Last);
+        NextClassName = LessonsService.NextClassSubject.Name;
+        NextClassTeacherName = LessonsService.NextClassSubject.TeacherName;
+        NextStartTime = LessonsService.NextClassTimeLayoutItem.StartTime;
+        NextEndTime = LessonsService.NextClassTimeLayoutItem.EndTime;
         var visual = this.FindResource(key) as Control;
         Element = visual;
         _key = key;
@@ -130,9 +146,6 @@ public partial class ClassNotificationProviderControl : UserControl, INotifyProp
         OnPropertyChanged(propertyName);
         return true;
     }
-
-    public string NextTimeLayoutDurationHumanized =>
-        FormatTimeSpan(LessonsService.CurrentTimeLayoutItem.Last);
 
     public static string FormatTimeSpan(TimeSpan span)
     {
