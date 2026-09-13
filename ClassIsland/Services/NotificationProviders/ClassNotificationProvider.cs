@@ -149,7 +149,7 @@ public class ClassNotificationProvider : NotificationProviderBase<ClassNotificat
                 ShowTeacherName = Settings.ShowTeacherName
             })
             {
-                SpeechContent = $"{message} 下节课是：{LessonsService.NextClassSubject.Name}{(Settings.ShowTeacherName ? $"，{FormatTeacher(LessonsService.NextClassSubject)}" : "")}。",
+                SpeechContent = $"{message} 本节课是：{LessonsService.NextClassSubject.Name}{(Settings.ShowTeacherName ? $"，{FormatTeacher(LessonsService.NextClassSubject)}" : "")}。",
                 EndTime = new DateTime(DateOnly.FromDateTime(ExactTimeService.GetCurrentLocalDateTime()), TimeOnly.FromTimeSpan(LessonsService.NextClassTimeLayoutItem.StartTime)),
                 IsSpeechEnabled = Settings.IsSpeechEnabledOnClassPreparing
             },

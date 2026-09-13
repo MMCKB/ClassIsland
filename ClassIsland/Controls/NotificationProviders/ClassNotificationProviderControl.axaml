@@ -30,7 +30,7 @@
             <!-- 科目信息 -->
             <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal"
                         Margin="12 0">
-                <TextBlock VerticalAlignment="Center" Text="下节课是：" Classes="l-instructive"/>
+                <TextBlock VerticalAlignment="Center" Text="本节课是：" Classes="l-instructive"/>
                 <TextBlock Text="{Binding NextClassName}" FontWeight="Bold" FontSize="{DynamicResource MainWindowLargeFontSize}" VerticalAlignment="Center"/>
                 <TextBlock Margin="6 0 0 0" FontSize="{DynamicResource MainWindowSecondaryFontSize}" VerticalAlignment="Bottom"
                            Text="{Binding NextClassTeacherName}"
