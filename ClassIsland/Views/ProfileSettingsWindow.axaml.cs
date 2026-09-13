@@ -821,13 +821,66 @@ public partial class ProfileSettingsWindow : MyWindow
     {
         var timeLayout = new TimeLayout()
         {
-            Name = "新时间表"
+            Name = GetNewTimeLayoutName()
         };
         ViewModel.ProfileService.Profile.TimeLayouts.Add(Guid.NewGuid(), timeLayout);
         OpenDrawer("TimeLayoutInfoEditor");
         ViewModel.SelectedTimeLayout = timeLayout;
         SentrySdk.Metrics.EmitCounter("views.ProfileSettingsWindow.timeLayout.create", 1);
         ViewModel.TutorialService.PushToNextSentence("classisland.getStarted.profileEditing/setup-timeLayout");
+    }
+
+    private string GetNewTimeLayoutName()
+    {
+        // 新建时间表时自动编号，避免与现有时间表重名。（issue #1864）
+        var names = ViewModel.ProfileService.Profile.TimeLayouts.Values
+            .Select(x => x.Name)
+            .ToHashSet();
+        for (var i = 1; ; i++)
+        {
+            var candidate = $"新时间表{i}";
+            if (!names.Contains(candidate))
+            {
+                return candidate;
+            }
+        }
+    }
+
+    private void TimeLayoutNameTextBox_OnLostFocus(object? sender, RoutedEventArgs e)
+    {
+        if (sender is not TextBox textBox || ViewModel.SelectedTimeLayout == null)
+        {
+            return;
+        }
+        var name = textBox.Text?.Trim();
+        if (!string.IsNullOrWhiteSpace(name) && name != textBox.Text)
+        {
+            textBox.Text = name;
+        }
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return;
+        }
+        var duplicated = ViewModel.ProfileService.Profile.TimeLayouts.Values
+            .Any(x => !ReferenceEquals(x, ViewModel.SelectedTimeLayout) && x.Name == name);
+        if (!duplicated)
+        {
+            return;
+        }
+        var existingNames = ViewModel.ProfileService.Profile.TimeLayouts.Values
+            .Where(x => !ReferenceEquals(x, ViewModel.SelectedTimeLayout))
+            .Select(x => x.Name)
+            .ToHashSet();
+        for (var i = 2; ; i++)
+        {
+            var candidate = $"{name} ({i})";
+            if (!existingNames.Contains(candidate))
+            {
+                textBox.Text = candidate;
+                break;
+            }
+        }
+        this.ShowToast(new ToastMessage($"已存在同名时间表，已自动重命名为“{textBox.Text}”。"));
     }
     
     private void ButtonDuplicateTimeLayout_OnClick(object sender, RoutedEventArgs e)

@@ -206,7 +206,8 @@
                 <TextBlock Text="时间表信息" Theme="{StaticResource SubtitleTextBlockStyle}"/>
                 <ci:Field Label="名称">
                     <TextBox Margin="0 4 0 0"
-                             Text="{Binding Name}"/>
+                             Text="{Binding Name}"
+                             LostFocus="TimeLayoutNameTextBox_OnLostFocus"/>
                 </ci:Field>
                 <!-- 附加属性 -->
                 <Separator Margin="0 8 0 0"/>
