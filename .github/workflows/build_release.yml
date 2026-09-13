@@ -174,8 +174,6 @@ jobs:
     needs: [ build_app, build_launcher ]
     steps:
       - name: Checkout
-      - name: Fetch tags from upstream (forks do not carry tags)
-        run: git fetch --tags https://github.com/ClassIsland/ClassIsland.git
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
