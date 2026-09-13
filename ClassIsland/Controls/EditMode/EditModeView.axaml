@@ -250,7 +250,7 @@
                                                 ClipToBounds="False"
                                                 TextElement.FontSize="16"
                                                 Classes="repair-fontsize"/>
-                    <TextBlock Text="{Binding ViewModel.MainViewModel.SelectedComponentSettings.AssociatedComponentInfo.Name}"
+                    <TextBox Text="{Binding ViewModel.MainViewModel.SelectedComponentSettings.CustomName, Mode=TwoWay}" Watermark="{Binding ViewModel.MainViewModel.SelectedComponentSettings.AssociatedComponentInfo.Name}" Width="120" Height="26" Padding="4 2"
                                VerticalAlignment="Center" Margin="0 1 0 0"/>
                 </StackPanel>
                 <TabStrip Classes="compact" SelectedIndex="{Binding ViewModel.ComponentSettingsTabIndex}">

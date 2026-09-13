@@ -18,6 +18,7 @@ public class ComponentSettings : ObservableRecipient, IMainWindowCustomizableNod
     private bool _hideOnRule = false;
     private object? _settings;
     private string _nameCache = "";
+    private string _customName = "";
     private string _id = "";
     private Ruleset.Ruleset _hidingRules = new();
     private double _mainWindowSecondaryFontSize = 14;
@@ -131,6 +132,25 @@ public class ComponentSettings : ObservableRecipient, IMainWindowCustomizableNod
     /// 这个组件关联的组件注册信息。
     /// </summary>
     [JsonIgnore]
+    /// <summary>
+    /// 组件的自定义名称。为空时显示组件注册名称。（issue #647）
+    /// </summary>
+    public string CustomName
+    {
+        get => _customName;
+        set
+        {
+            if (value == _customName) return;
+            _customName = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(DisplayName));
+        }
+    }
+
+    [JsonIgnore]
+    public string DisplayName =>
+        string.IsNullOrWhiteSpace(CustomName) ? (AssociatedComponentInfo.Name ?? NameCache) : CustomName;
+
     public ComponentInfo AssociatedComponentInfo =>
         ComponentRegistryService.Registered.FirstOrDefault(x => string.Equals(x.Guid.ToString(), Id, StringComparison.CurrentCultureIgnoreCase)) ?? ComponentInfo.Empty;
 

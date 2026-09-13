@@ -32,7 +32,7 @@
                                                     ClipToBounds="False"
                                                     TextElement.FontSize="16"
                                                     Classes="repair-fontsize"/>
-                        <TextBlock Text="{Binding ComponentSettings.AssociatedComponentInfo.Name}"
+                        <TextBlock Text="{Binding ComponentSettings.DisplayName}"
                                    VerticalAlignment="Center" />
                     </StackPanel>
                 </Border>
@@ -113,7 +113,7 @@
                                                             ClipToBounds="False"
                                                             TextElement.FontSize="16"
                                                             Classes="repair-fontsize" />
-                                                        <TextBlock Text="{Binding AssociatedComponentInfo.Name}"
+                                                        <TextBlock Text="{Binding AssociatedComponentInfo.DisplayName}"
                                                                    VerticalAlignment="Center" Margin="0 1 0 0" />
                                                     </StackPanel>
                                                     <Button Theme="{StaticResource TransparentButton}"

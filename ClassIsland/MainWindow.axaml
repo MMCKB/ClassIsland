@@ -513,7 +513,7 @@
                                                                         TextElement.FontSize="16"
                                                                         Classes="repair-fontsize" />
                                                                     <TextBlock
-                                                                        Text="{Binding Settings.AssociatedComponentInfo.Name}"
+                                                                        Text="{Binding Settings.DisplayName}"
                                                                         VerticalAlignment="Center" Margin="0 1 0 0" />
                                                                 </StackPanel>
                                                                 <Panel>
