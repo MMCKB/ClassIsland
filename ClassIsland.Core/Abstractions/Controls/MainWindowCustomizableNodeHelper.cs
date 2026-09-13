@@ -63,7 +63,24 @@ public static class MainWindowCustomizableNodeHelper
             control.ClearValue(MainWindowStylesAssist.BackgroundOpacityProperty);
         }
 
-        ControlColorHelper.SetControlForegroundColor(control, settings.ForegroundColor, 
-            settings.IsCustomForegroundColorEnabled);
+        if (settings.IsCustomForegroundColorEnabled)
+        {
+            ControlColorHelper.SetControlForegroundColor(control, settings.ForegroundColor,
+                settings.IsCustomForegroundColorEnabled);
+        }
+        else if (settings.IsCustomBackgroundColorEnabled)
+        {
+            // 自定义了背景色但未自定义前景色时，按背景亮度自动切换黑/白前景色，
+            // 避免浅色背景上的白色文字不可读。（issue #689）
+            var bg = settings.BackgroundColor;
+            var luminance = (0.299 * bg.R + 0.587 * bg.G + 0.114 * bg.B) / 255.0;
+            var autoForeground = luminance > 0.6 ? Avalonia.Media.Colors.Black : Avalonia.Media.Colors.White;
+            ControlColorHelper.SetControlForegroundColor(control, autoForeground, true);
+        }
+        else
+        {
+            ControlColorHelper.SetControlForegroundColor(control, settings.ForegroundColor,
+                settings.IsCustomForegroundColorEnabled);
+        }
     }
 }
