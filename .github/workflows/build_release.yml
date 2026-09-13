@@ -412,3 +412,29 @@ jobs:
           ls
           cd out_artifacts/out_nupkgs
           dotnet nuget push *.nupkg -k $env:NUGET_KEY -s https://api.nuget.org/v3/index.json --skip-duplicate
+
+  upload_release:
+    name: Upload artifacts to release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download artifacts from successful build run
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 34780811193
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: out
+      - name: Zip each artifact
+        run: |
+          cd out
+          for d in */; do (cd "${d%/}" && zip -qr "../${d%/}.zip" .); done
+          ls -la *.zip
+      - name: Upload to release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: 2.1.1.2
+          allowUpdates: true
+          replacesArtifacts: true
+          artifacts: "out/*.zip"
+          token: ${{ secrets.GITHUB_TOKEN }}
