@@ -330,7 +330,11 @@ jobs:
         run: |
           dotnet nuget add source --username github-actions --password $env:GHPKG_KEY --store-password-in-clear-text --name github "https://nuget.pkg.github.com/ClassIsland/index.json"
           dotnet nuget push .\out\package\release\*.nupkg -k $env:GHPKG_KEY --source "github" --skip-duplicate
-          dotnet nuget push .\out\package\release\*.nupkg -k $env:MYGET_ORG_KEY --source https://www.myget.org/F/classisland/api/v3/index.json --skip-duplicate
+          if ($env:MYGET_ORG_KEY) {
+            dotnet nuget push .\out\package\release\*.nupkg -k $env:MYGET_ORG_KEY --source https://www.myget.org/F/classisland/api/v3/index.json --skip-duplicate
+          } else {
+            Write-Host "MYGET_ORG_KEY 未配置（fork 无该密钥），跳过 MyGet 推送。"
+          }
 
       - name: Upload Nuget Packages to artifacts
         if: ${{ !matrix.trim_assets }}
