@@ -657,22 +657,56 @@ public partial class SettingsWindowNew : MyWindow, INavigationPageFactory
         }
     }
 
+    private static void OpenDirectory(string path)
+    {
+        // Linux 下 UseShellExecute 无法直接打开目录，需交给 xdg-open；macOS 使用 open。（issue #1895）
+        var fullPath = Path.GetFullPath(path);
+        if (OperatingSystem.IsLinux())
+        {
+            Process.Start(new ProcessStartInfo("xdg-open", fullPath)
+            {
+                UseShellExecute = true
+            });
+        }
+        else if (OperatingSystem.IsMacOS())
+        {
+            Process.Start(new ProcessStartInfo("open", fullPath)
+            {
+                UseShellExecute = true
+            });
+        }
+        else
+        {
+            Process.Start(new ProcessStartInfo()
+            {
+                FileName = fullPath,
+                UseShellExecute = true
+            });
+        }
+    }
+
     private void MenuItemOpenLogFolder_OnClick(object sender, RoutedEventArgs e)
     {
-        Process.Start(new ProcessStartInfo()
+        try
         {
-            FileName = Path.GetFullPath(CommonDirectories.AppLogFolderPath) ?? "",
-            UseShellExecute = true
-        });
+            OpenDirectory(CommonDirectories.AppLogFolderPath);
+        }
+        catch (Exception exception)
+        {
+            this.ShowErrorToast("无法打开日志目录。", exception);
+        }
     }
 
     private void MenuItemOpenAppFolder_OnClick(object sender, RoutedEventArgs e)
     {
-        Process.Start(new ProcessStartInfo()
+        try
         {
-            FileName = Path.GetFullPath(".") ?? "",
-            UseShellExecute = true
-        });
+            OpenDirectory(".");
+        }
+        catch (Exception exception)
+        {
+            this.ShowErrorToast("无法打开应用目录。", exception);
+        }
     }
 
     private void MenuItemDebugWindowRule_OnClick(object sender, RoutedEventArgs e)
@@ -682,11 +716,14 @@ public partial class SettingsWindowNew : MyWindow, INavigationPageFactory
 
     private void MenuItemOpenDataFolder_OnClick(object sender, RoutedEventArgs e)
     {
-        Process.Start(new ProcessStartInfo()
+        try
         {
-            FileName = Path.GetFullPath(CommonDirectories.AppRootFolderPath) ?? "",
-            UseShellExecute = true
-        });
+            OpenDirectory(CommonDirectories.AppRootFolderPath);
+        }
+        catch (Exception exception)
+        {
+            this.ShowErrorToast("无法打开数据目录。", exception);
+        }
     }
 
     private async void MenuItemAddDesktopShortcut_OnClick(object? sender, RoutedEventArgs e)
