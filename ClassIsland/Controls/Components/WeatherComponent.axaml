@@ -318,6 +318,16 @@
                     </StackPanel>
                 </Border>
             </Grid>
+            <!-- 自定义天气说明文字（issue #819） -->
+            <Border Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                    CornerRadius="8" Padding="8 4"
+                    VerticalAlignment="Center"
+                    IsVisible="{Binding Settings.IsWeatherNoteEnabled}">
+                <TextBlock Text="{Binding Settings.WeatherNoteText}"
+                           FontSize="{DynamicResource MainWindowSecondaryFontSize}"
+                           TextWrapping="NoWrap" MaxWidth="360"
+                           TextTrimming="CharacterEllipsis"/>
+            </Border>
         </StackPanel>
     </Grid>
 </controls:ComponentBase>

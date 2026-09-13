@@ -86,3 +86,32 @@ public class WeatherComponentSettings : ObservableRecipient
         }
     }
 }
+    private bool _isWeatherNoteEnabled = false;
+
+    /// <summary>
+    /// 是否在天气组件上显示自定义说明文字。（issue #819）
+    /// </summary>
+    public bool IsWeatherNoteEnabled
+    {
+        get => _isWeatherNoteEnabled;
+        set
+        {
+            if (value == _isWeatherNoteEnabled) return;
+            _isWeatherNoteEnabled = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private string _weatherNoteText = "";
+
+    public string WeatherNoteText
+    {
+        get => _weatherNoteText;
+        set
+        {
+            if (value == _weatherNoteText) return;
+            _weatherNoteText = value;
+            OnPropertyChanged();
+        }
+    }
+}

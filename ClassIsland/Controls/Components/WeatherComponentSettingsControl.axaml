@@ -75,6 +75,18 @@
                         </controls1:SettingsExpanderItem.Footer>
                     </controls1:SettingsExpanderItem>
                 </controls1:SettingsExpander>
+                <controls1:SettingsExpander IconSource="{ci:FluentIconSource &#xF4A4;}"
+                                            Header="自定义天气说明文字"
+                                            Description="在天气组件上显示一段自定义文字说明。">
+                    <controls1:SettingsExpander.Footer>
+                        <ToggleSwitch IsChecked="{Binding Settings.IsWeatherNoteEnabled, Mode=TwoWay}"/>
+                    </controls1:SettingsExpander.Footer>
+                    <controls1:SettingsExpanderItem Content="说明内容">
+                        <controls1:SettingsExpanderItem.Footer>
+                            <TextBox Text="{Binding Settings.WeatherNoteText, Mode=TwoWay}" Width="220"/>
+                        </controls1:SettingsExpanderItem.Footer>
+                    </controls1:SettingsExpanderItem>
+                </controls1:SettingsExpander>
         </StackPanel>
     </ScrollViewer>
 </controls:ComponentBase>
