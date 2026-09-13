@@ -9,6 +9,7 @@
         Topmost="True"
         Title="顶层效果窗口" Height="1" Width="1"
         Background="Transparent"
+        ShowInTaskbar="False"
         Closing="TopmostEffectWindow_OnClosing"
         CanResize="False"
         SystemDecorations="None"
